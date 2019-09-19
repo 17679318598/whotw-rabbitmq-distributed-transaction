@@ -1,0 +1,36 @@
+server:
+  port: 8081
+spring:
+  rabbitmq:
+    virtual-host: /
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+    #【以下两项通过ConnectionFactory创建的RabbitTemplate,需要在ConnectionFactory设置，否则自定义confirms不生效】
+    ##设置confirms确认机制
+    #publisher-confirms: true
+    ##设置确认回调机制
+    #publisher-returns: true
+    listener:
+      simple:
+        retry:
+          #默认关闭
+          enabled: true
+          #每隔三秒进行重试默认10000ms
+          max-interval: 3000ms
+          #重试五次【只要消息没被手动ack或异常就会重试】
+          max-attempts: 20
+        #设置手动ack提交
+        acknowledge-mode: manual
+  datasource:
+      ###hikari连接池
+      type: com.zaxxer.hikari.HikariDataSource
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/demo
+      username: root
+      password: root
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
